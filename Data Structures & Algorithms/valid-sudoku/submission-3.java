@@ -1,0 +1,44 @@
+class Solution {
+    public boolean isValidSudoku(char[][] board) {
+        // Map<Row #, Map< #, freq>>
+        Map<Integer, HashSet<Character>> column = new HashMap<>();
+
+        // Map<Ceil((Row # + 1)/2) #, Map<Ceil((Column # + 1)/2), Map< #, freq>>>
+        Map<Integer, HashMap<Integer, HashSet<Character>>> box = new HashMap<>();
+
+        // i = row, j = column
+        for(int i = 0; i<board.length; i++){
+            Set<Character> row = new HashSet<>();
+            for(int j = 0; j<board.length; j++){
+                if(board[i][j] == '.'){
+                    continue;
+                }
+
+                // Row Check
+                if(row.contains(board[i][j])){
+                    return false;
+                }
+                row.add(board[i][j]);
+
+                // Column Check
+                if(column.containsKey(j) && column.get(j).contains(board[i][j])){
+                    return false;
+                }
+                column.computeIfAbsent(j, k -> new HashSet<Character>()).add(board[i][j]);
+
+                // Box check
+                int x = (int) Math.ceil((i+1.0)/3.0);
+                int y = (int) Math.ceil((j+1.0)/3.0);
+
+                if(box.containsKey(x) && box.get(x).containsKey(y) && box.get(x).get(y).contains(board[i][j])){
+                    return false;
+                }
+                box.computeIfAbsent(x, k -> new HashMap<Integer, HashSet<Character>>())
+                    .computeIfAbsent(y, k -> new HashSet<Character>())
+                    .add(board[i][j]);
+            }
+        }
+
+        return true;
+    }
+}
