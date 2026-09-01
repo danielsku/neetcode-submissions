@@ -1,0 +1,36 @@
+class Solution {
+    
+    private boolean[][] visited;
+    private int[][] grid;
+    private int rows, cols;
+
+    public int maxAreaOfIsland(int[][] grid) {
+        this.grid = grid;
+        this.rows = grid.length;
+        this.cols = grid[0].length;
+        this.visited = new boolean[rows][cols];
+
+        int maxArea = 0;
+
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < cols; j++){
+                if(!visited[i][j] && grid[i][j] == 1)
+                    maxArea = Math.max(maxArea, dfs(i, j));
+            }
+        }
+
+        return maxArea;
+    }
+
+    public int dfs(int i, int j){
+        if(i < 0 || j < 0 || 
+        i >= rows || j >= cols || 
+        grid[i][j] == 0 || visited[i][j]) return 0;
+        visited[i][j] = true;
+
+        return 1 + dfs(i + 1, j) +
+        dfs(i - 1, j) +
+        dfs(i, j + 1) +
+        dfs(i, j - 1);
+    }
+}
